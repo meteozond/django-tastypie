@@ -342,7 +342,7 @@ class DigestAuthentication(Authentication):
         digest_response = python_digest.parse_digest_credentials(request.META['HTTP_AUTHORIZATION'])
 
         # FIXME: Should the nonce be per-user?
-        if not python_digest.validate_nonce(digest_response.nonce, getattr(settings, 'SECRET_KEY', '')):
+        if not digest_response or not python_digest.validate_nonce(digest_response.nonce, getattr(settings, 'SECRET_KEY', '')):
             return self._unauthorized()
 
         user = self.get_user(digest_response.username)
